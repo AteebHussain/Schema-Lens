@@ -1,54 +1,52 @@
 # SchemaLens
 
-**Paste your schema. See your database think.**
+Paste your SQL schema. See your database think. Interactive ERD visualizer with query optimization and schema health reports.
 
-SchemaLens is a web tool where you paste raw `CREATE TABLE` SQL and instantly get:
+![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
+![Gemini](https://img.shields.io/badge/Gemini-AI%20Powered-blue)
 
-- 🔗 **Interactive ERD** — draggable table nodes, relationship lines, FK/PK highlights, zoom & pan
-- ⚡ **Query suggestions** — optimized JOINs, cardinality detection, index opportunity warnings
-- 🩺 **Schema health report** — orphaned tables, missing PKs, circular FK dependencies, naming inconsistencies
+## Features
 
-> Click a relationship line. See the JOIN query, its cardinality, a warning if there's no index on the FK column, and a semantic explanation of what that relationship means.
-
-## Tech Stack
-
-- **Frontend:** Next.js 16 · React 19 · TypeScript · D3.js v7 · Tailwind CSS v4 · CodeMirror 6 · Zustand
-- **Backend:** Next.js API Routes · Gemini API (optional, for AI analysis)
-- **Parsing:** node-sql-parser
+- Interactive ERD — draggable tables, zoom/pan, PK/FK badges, clickable relationship lines
+- Query suggestions — optimized JOINs with cardinality detection (1:1, 1:N, M:N)
+- Schema health report — missing PKs, orphaned tables, circular FKs, missing indexes
+- 3 sample schemas — E-Commerce, SaaS, Social Graph with pre-selected demo relationships
+- AI analysis — Gemini-powered semantic explanations (optional, works without API key)
+- URL sharing — compress and share your schema via URL
+- Dark theme — premium dark UI with dot-grid background
 
 ## Getting Started
 
+### 1. Clone & Install
+
 ```bash
+git clone https://github.com/AteebHussain/Schema-Lens.git
+cd Schema-Lens
 npm install
+```
+
+### 2. Set up API Key (Optional)
+
+Get a Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey).
+
+```bash
+cp .env.example .env.local
+# Then paste your key in .env.local
+```
+
+### 3. Run
+
+```bash
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
 
-### Environment Variables (Optional)
+## Environment Variables
 
-```env
-GEMINI_API_KEY=your_gemini_api_key_here
-```
-
-The app works fully without an API key — the rule-based engine handles JOINs, cardinality, and health checks. The Gemini API adds semantic explanations as an enhancement.
-
-## Sample Schemas
-
-Three built-in schemas to try instantly:
-
-| Schema | What it demonstrates |
-|--------|---------------------|
-| **E-Commerce** | Users, products, orders, reviews — classic 1:N relationships |
-| **Multi-Tenant SaaS** | Organizations, memberships, billing — role-based access patterns |
-| **Social Graph** | Self-referential follows, posts, likes — recursive FK relationships |
-
-## Features
-
-- **Graceful error handling** — bad SQL shows the exact failing line, doesn't crash the diagram
-- **URL sharing** — schema compressed into a shareable URL (zlib + base64)
-- **Opinionated health checks** — *"FK column `orders.user_id` has no index. JOINs to `users` will scan the full `orders` table."*
-- **Rule-based fallback** — instant query suggestions without waiting for API responses
+| Variable | Required | Description |
+|---|---|---|
+| `GEMINI_API_KEY` | No | Gemini API key for AI analysis |
 
 ## License
 
