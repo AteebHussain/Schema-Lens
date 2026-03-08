@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SchemaLens
+
+**Paste your schema. See your database think.**
+
+SchemaLens is a web tool where you paste raw `CREATE TABLE` SQL and instantly get:
+
+- 🔗 **Interactive ERD** — draggable table nodes, relationship lines, FK/PK highlights, zoom & pan
+- ⚡ **Query suggestions** — optimized JOINs, cardinality detection, index opportunity warnings
+- 🩺 **Schema health report** — orphaned tables, missing PKs, circular FK dependencies, naming inconsistencies
+
+> Click a relationship line. See the JOIN query, its cardinality, a warning if there's no index on the FK column, and a semantic explanation of what that relationship means.
+
+## Tech Stack
+
+- **Frontend:** Next.js 16 · React 19 · TypeScript · D3.js v7 · Tailwind CSS v4 · CodeMirror 6 · Zustand
+- **Backend:** Next.js API Routes · Gemini API (optional, for AI analysis)
+- **Parsing:** node-sql-parser
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment Variables (Optional)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+```
 
-## Learn More
+The app works fully without an API key — the rule-based engine handles JOINs, cardinality, and health checks. The Gemini API adds semantic explanations as an enhancement.
 
-To learn more about Next.js, take a look at the following resources:
+## Sample Schemas
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Three built-in schemas to try instantly:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Schema | What it demonstrates |
+|--------|---------------------|
+| **E-Commerce** | Users, products, orders, reviews — classic 1:N relationships |
+| **Multi-Tenant SaaS** | Organizations, memberships, billing — role-based access patterns |
+| **Social Graph** | Self-referential follows, posts, likes — recursive FK relationships |
 
-## Deploy on Vercel
+## Features
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Graceful error handling** — bad SQL shows the exact failing line, doesn't crash the diagram
+- **URL sharing** — schema compressed into a shareable URL (zlib + base64)
+- **Opinionated health checks** — *"FK column `orders.user_id` has no index. JOINs to `users` will scan the full `orders` table."*
+- **Rule-based fallback** — instant query suggestions without waiting for API responses
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+MIT
