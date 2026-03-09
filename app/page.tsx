@@ -63,20 +63,14 @@ export default function Home() {
       <header className="app-header">
         <div className="header-left">
           <div className="logo">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="url(#logoGrad)" strokeWidth="2" fill="none" />
-              <circle cx="12" cy="8" r="2" fill="#818cf8" />
-              <circle cx="8" cy="14" r="2" fill="#6366f1" />
-              <circle cx="16" cy="14" r="2" fill="#a78bfa" />
-              <line x1="12" y1="10" x2="8" y2="12" stroke="#6366f1" strokeWidth="1.5" />
-              <line x1="12" y1="10" x2="16" y2="12" stroke="#a78bfa" strokeWidth="1.5" />
-              <line x1="8" y1="14" x2="16" y2="14" stroke="#4f46e5" strokeWidth="1" opacity="0.5" />
-              <defs>
-                <linearGradient id="logoGrad" x1="0" y1="0" x2="24" y2="24">
-                  <stop offset="0%" stopColor="#6366f1" />
-                  <stop offset="100%" stopColor="#a78bfa" />
-                </linearGradient>
-              </defs>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="#3E3636" strokeWidth="2" fill="none" />
+              <circle cx="12" cy="8" r="2" fill="#D72323" />
+              <circle cx="8" cy="14" r="2" fill="#F5EDED" />
+              <circle cx="16" cy="14" r="2" fill="#F5EDED" />
+              <line x1="12" y1="10" x2="8" y2="12" stroke="#3E3636" strokeWidth="1.5" />
+              <line x1="12" y1="10" x2="16" y2="12" stroke="#3E3636" strokeWidth="1.5" />
+              <line x1="8" y1="14" x2="16" y2="14" stroke="#3E3636" strokeWidth="1" opacity="0.4" />
             </svg>
             <span className="logo-text">SchemaLens</span>
           </div>

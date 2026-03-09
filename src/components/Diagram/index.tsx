@@ -76,7 +76,7 @@ export default function Diagram() {
       .attr("orient", "auto")
       .append("polygon")
       .attr("points", "0 0, 10 3.5, 0 7")
-      .attr("fill", "#6366f1");
+      .attr("fill", "#3E3636");
 
     defs
       .append("marker")
@@ -89,7 +89,7 @@ export default function Diagram() {
       .attr("orient", "auto")
       .append("polygon")
       .attr("points", "0 0, 10 3.5, 0 7")
-      .attr("fill", "#a78bfa");
+      .attr("fill", "#D72323");
 
     // Glow filter
     const filter = defs.append("filter").attr("id", "glow");
@@ -115,7 +115,7 @@ export default function Diagram() {
       .attr("class", "link-path")
       .attr("fill", "none")
       .attr("stroke", (d: GraphLink) =>
-        d.relationship.id === activeRelationshipId ? "#a78bfa" : "#4f46e5"
+        d.relationship.id === activeRelationshipId ? "#D72323" : "#3E3636"
       )
       .attr("stroke-width", (d: GraphLink) =>
         d.relationship.id === activeRelationshipId ? 3 : 1.5
@@ -143,7 +143,7 @@ export default function Diagram() {
     cardLabels
       .append("text")
       .attr("class", "cardinality-text source-card")
-      .attr("fill", "#a5b4fc")
+      .attr("fill", "#F5EDED")
       .attr("font-size", "11px")
       .attr("font-weight", "700")
       .attr("text-anchor", "middle")
@@ -193,11 +193,11 @@ export default function Diagram() {
       .attr("class", "node-bg")
       .attr("width", (d) => d.width)
       .attr("height", (d) => d.height)
-      .attr("rx", 10)
-      .attr("ry", 10)
-      .attr("fill", "#1e1b4b")
-      .attr("stroke", "#4f46e5")
-      .attr("stroke-width", 1.5);
+      .attr("rx", 8)
+      .attr("ry", 8)
+      .attr("fill", "#120f0f")
+      .attr("stroke", "#3E3636")
+      .attr("stroke-width", 1);
 
     // Node header
     nodeGs
@@ -205,9 +205,9 @@ export default function Diagram() {
       .attr("class", "node-header")
       .attr("width", (d) => d.width)
       .attr("height", 36)
-      .attr("rx", 10)
-      .attr("ry", 10)
-      .attr("fill", "#312e81");
+      .attr("rx", 8)
+      .attr("ry", 8)
+      .attr("fill", "#1a1515");
 
     // Cover bottom corners of header
     nodeGs
@@ -215,14 +215,14 @@ export default function Diagram() {
       .attr("width", (d) => d.width)
       .attr("height", 12)
       .attr("y", 24)
-      .attr("fill", "#312e81");
+      .attr("fill", "#1a1515");
 
     // Table name
     nodeGs
       .append("text")
       .attr("x", 12)
       .attr("y", 23)
-      .attr("fill", "#c7d2fe")
+      .attr("fill", "#F5EDED")
       .attr("font-size", "13px")
       .attr("font-weight", "700")
       .attr("font-family", "var(--font-geist-mono), monospace")
@@ -247,13 +247,13 @@ export default function Diagram() {
             .attr("width", 20)
             .attr("height", 14)
             .attr("rx", 3)
-            .attr("fill", "#eab308")
-            .attr("fill-opacity", 0.25);
+            .attr("fill", "#F5EDED")
+            .attr("fill-opacity", 0.1);
           group
             .append("text")
             .attr("x", 18)
             .attr("y", y + 1)
-            .attr("fill", "#facc15")
+            .attr("fill", "#F5EDED")
             .attr("font-size", "8px")
             .attr("font-weight", "700")
             .attr("text-anchor", "middle")
@@ -268,13 +268,13 @@ export default function Diagram() {
             .attr("width", 20)
             .attr("height", 14)
             .attr("rx", 3)
-            .attr("fill", "#6366f1")
-            .attr("fill-opacity", 0.25);
+            .attr("fill", "#D72323")
+            .attr("fill-opacity", 0.2);
           group
             .append("text")
             .attr("x", (isPK ? 32 : 8) + 10)
             .attr("y", y + 1)
-            .attr("fill", "#a78bfa")
+            .attr("fill", "#D72323")
             .attr("font-size", "8px")
             .attr("font-weight", "700")
             .attr("text-anchor", "middle")
@@ -287,7 +287,7 @@ export default function Diagram() {
           .append("text")
           .attr("x", nameX)
           .attr("y", y)
-          .attr("fill", isPK ? "#facc15" : isFK ? "#a78bfa" : "#e2e8f0")
+          .attr("fill", isPK ? "#F5EDED" : isFK ? "#D72323" : "#b8a9a9")
           .attr("font-size", "11px")
           .attr("font-family", "var(--font-geist-mono), monospace")
           .text(col.name);
@@ -297,7 +297,7 @@ export default function Diagram() {
           .append("text")
           .attr("x", d.width - 8)
           .attr("y", y)
-          .attr("fill", "#64748b")
+          .attr("fill", "#6e5c5c")
           .attr("font-size", "10px")
           .attr("font-family", "var(--font-geist-mono), monospace")
           .attr("text-anchor", "end")
@@ -349,11 +349,11 @@ export default function Diagram() {
       <div className="diagram-empty">
         <div className="empty-icon">
           <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-            <rect x="4" y="8" width="16" height="12" rx="3" stroke="#4f46e5" strokeWidth="2" fill="none" />
-            <rect x="28" y="8" width="16" height="12" rx="3" stroke="#4f46e5" strokeWidth="2" fill="none" />
-            <rect x="16" y="28" width="16" height="12" rx="3" stroke="#4f46e5" strokeWidth="2" fill="none" />
-            <line x1="20" y1="20" x2="24" y2="28" stroke="#6366f1" strokeWidth="1.5" strokeDasharray="3 3" />
-            <line x1="28" y1="20" x2="24" y2="28" stroke="#6366f1" strokeWidth="1.5" strokeDasharray="3 3" />
+            <rect x="4" y="8" width="16" height="12" rx="3" stroke="#3E3636" strokeWidth="2" fill="none" />
+            <rect x="28" y="8" width="16" height="12" rx="3" stroke="#3E3636" strokeWidth="2" fill="none" />
+            <rect x="16" y="28" width="16" height="12" rx="3" stroke="#3E3636" strokeWidth="2" fill="none" />
+            <line x1="20" y1="20" x2="24" y2="28" stroke="#D72323" strokeWidth="1.5" strokeDasharray="3 3" />
+            <line x1="28" y1="20" x2="24" y2="28" stroke="#D72323" strokeWidth="1.5" strokeDasharray="3 3" />
           </svg>
         </div>
         <p className="empty-title">No schema loaded</p>
