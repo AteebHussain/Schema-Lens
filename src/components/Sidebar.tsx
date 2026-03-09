@@ -56,9 +56,6 @@ export default function Sidebar() {
   if (tables.length === 0) {
     return (
       <div className="sidebar">
-        <div className="sidebar-header">
-          <h2>Schema Analysis</h2>
-        </div>
         <div className="sidebar-empty">
           <p>Load a schema to see analysis</p>
         </div>
@@ -68,10 +65,6 @@ export default function Sidebar() {
 
   return (
     <div className="sidebar">
-      <div className="sidebar-header">
-        <h2>Schema Analysis</h2>
-      </div>
-
       {/* Tab bar */}
       <div className="sidebar-tabs">
         <button

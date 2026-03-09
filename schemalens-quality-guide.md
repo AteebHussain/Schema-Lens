@@ -189,10 +189,13 @@ This is visible to every recruiter who clicks your GitHub.
 ❌ "fix stuff"
 ❌ "wip"
 ❌ "asdfgh"
+❌ "feat: add FK relationship detection for inline CONSTRAINT syntax"
+❌ "fix: resolve force simulation jitter on schemas with circular FKs"
+❌ "refactor: extract cardinality detection into standalone utility"
 
-✅ "feat: add FK relationship detection for inline CONSTRAINT syntax"
-✅ "fix: resolve force simulation jitter on schemas with circular FKs"
-✅ "refactor: extract cardinality detection into standalone utility"
+✅ "Added FK relationship detection for inline CONSTRAINT syntax"
+✅ "Forced simulation jitter on schemas with circular FKs"
+✅ "Extracted cardinality detection into standalone utility"
 ```
 
 Use the conventional commits format: `feat:`, `fix:`, `refactor:`, `docs:`, `chore:`.

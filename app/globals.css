@@ -76,18 +76,25 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 48px;
+  height: 40px;
   padding: 0 16px;
   background: var(--color-surface-elevated);
   border-bottom: 1px solid var(--border-subtle);
   flex-shrink: 0;
   z-index: 10;
+  position: relative;
 }
 
 .header-left {
   display: flex;
   align-items: center;
   gap: 16px;
+}
+
+.header-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .logo {
@@ -115,9 +122,42 @@ body {
   gap: 8px;
 }
 
-.sample-buttons {
-  display: flex;
-  gap: 4px;
+/* ── Dropdown ───────────────────────────────────────────────────────── */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 180px;
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 4px;
+  z-index: 50;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 6px 10px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.1s ease;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.dropdown-item:hover {
+  background: var(--color-surface-overlay);
 }
 
 .sample-btn {
@@ -165,6 +205,11 @@ body {
 .action-btn:hover {
   color: var(--color-text-primary);
   border-color: var(--border-default);
+}
+
+.action-btn.active {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
 }
 
 .action-btn:disabled {
@@ -392,19 +437,6 @@ body {
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-}
-
-.sidebar-header {
-  padding: 10px 16px;
-  border-bottom: 1px solid var(--border-subtle);
-  flex-shrink: 0;
-}
-
-.sidebar-header h2 {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  letter-spacing: -0.3px;
 }
 
 .sidebar-empty {
