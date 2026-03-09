@@ -127,6 +127,16 @@ export default function Diagram() {
           : "url(#arrowhead)"
       )
       .attr("cursor", "pointer")
+      .on("mouseover", function (this: SVGPathElement, _event: MouseEvent, d: GraphLink) {
+        if (d.relationship.id !== activeRelationshipId) {
+          d3.select(this).attr("stroke", "#D72323").attr("stroke-width", 2.5).attr("stroke-opacity", 1);
+        }
+      })
+      .on("mouseout", function (this: SVGPathElement, _event: MouseEvent, d: GraphLink) {
+        if (d.relationship.id !== activeRelationshipId) {
+          d3.select(this).attr("stroke", "#3E3636").attr("stroke-width", 1.5).attr("stroke-opacity", 0.7);
+        }
+      })
       .on("click", (_event: MouseEvent, d: GraphLink) => {
         setActiveRelationship(d.relationship.id);
       });
@@ -344,6 +354,17 @@ export default function Diagram() {
     simulationRef.current?.alpha(1).restart();
   }, []);
 
+  // Keyboard: Escape to deselect
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && activeRelationshipId) {
+        setActiveRelationship(null);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeRelationshipId, setActiveRelationship]);
+
   if (tables.length === 0) {
     return (
       <div className="diagram-empty">
@@ -356,8 +377,13 @@ export default function Diagram() {
             <line x1="28" y1="20" x2="24" y2="28" stroke="#D72323" strokeWidth="1.5" strokeDasharray="3 3" />
           </svg>
         </div>
-        <p className="empty-title">No schema loaded</p>
-        <p className="empty-subtitle">Paste SQL or load a sample to visualize your database</p>
+        <p className="empty-title">Paste SQL to start</p>
+        <div className="empty-steps">
+          <p>1. Paste <code>CREATE TABLE</code> statements in the editor</p>
+          <p>2. Tables and relationships render here</p>
+          <p>3. Click a relationship line for JOIN queries</p>
+        </div>
+        <p className="empty-hint">or try a sample schema from the dropdown above</p>
       </div>
     );
   }

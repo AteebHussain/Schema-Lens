@@ -240,9 +240,11 @@ export default function Sidebar() {
               )}
 
               {aiLoading && (
-                <div className="ai-loading">
-                  <div className="loading-spinner" />
-                  <span>Analyzing relationship...</span>
+                <div className="ai-skeleton">
+                  <div className="skeleton" style={{ height: 16, width: '80%' }} />
+                  <div className="skeleton" style={{ height: 16, width: '100%' }} />
+                  <div className="skeleton" style={{ height: 16, width: '60%' }} />
+                  <div className="skeleton" style={{ height: 16, width: '90%' }} />
                 </div>
               )}
 

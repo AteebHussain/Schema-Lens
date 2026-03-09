@@ -36,6 +36,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# quality guide (private)
+Anti-Vibe-Code.md
+schemalens-quality-guide.md
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
