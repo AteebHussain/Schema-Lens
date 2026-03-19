@@ -44,8 +44,8 @@
   /* Typography */
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Geist Mono', monospace;
-  --text-heading: 13px;
-  --text-body: 12px;
+  --text-heading: 15px;
+  --text-body: 13px;
   --text-label: 11px;
   --text-small: 10px;
 
@@ -103,10 +103,10 @@ button:focus:not(:focus-visible) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 40px;
+  height: 48px;
   padding: 0 16px;
   background: var(--color-surface-elevated);
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid #1F1F1F;
   flex-shrink: 0;
   z-index: 10;
   position: relative;
@@ -138,7 +138,7 @@ button:focus:not(:focus-visible) {
 }
 
 .tagline {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--color-text-muted);
   font-weight: 400;
 }
@@ -178,7 +178,7 @@ button:focus:not(:focus-visible) {
   text-align: left;
   transition: background 0.1s ease;
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--color-text-primary);
 }
@@ -264,7 +264,7 @@ button:focus:not(:focus-visible) {
 .panel-editor {
   width: 320px;
   flex-shrink: 0;
-  border-right: 1px solid var(--border-subtle);
+  border-right: 1px solid #1F1F1F;
   display: flex;
   flex-direction: column;
   background: var(--color-surface-elevated);
@@ -282,7 +282,7 @@ button:focus:not(:focus-visible) {
 .panel-sidebar {
   width: 340px;
   flex-shrink: 0;
-  border-left: 1px solid var(--border-subtle);
+  border-left: 1px solid #1F1F1F;
   background: var(--color-surface-elevated);
   display: flex;
   flex-direction: column;
@@ -298,11 +298,12 @@ button:focus:not(:focus-visible) {
 }
 
 .editor-header {
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--border-subtle);
+  padding: 0 12px;
+  border-bottom: 1px solid #1F1F1F;
   flex-shrink: 0;
 }
 
@@ -332,7 +333,7 @@ button:focus:not(:focus-visible) {
 .cm-wrapper .cm-editor {
   height: 100%;
   font-family: var(--font-mono) !important;
-  font-size: 12px !important;
+  font-size: 13px !important;
 }
 
 .cm-wrapper .cm-editor .cm-scroller {
@@ -389,13 +390,14 @@ button:focus:not(:focus-visible) {
 }
 
 .diagram-toolbar {
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 12px;
+  padding: 0 12px;
   background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid #1F1F1F;
   position: absolute;
   top: 0;
   left: 0;
@@ -512,8 +514,9 @@ button:focus:not(:focus-visible) {
 
 /* Tabs */
 .sidebar-tabs {
+  height: 48px;
   display: flex;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid #1F1F1F;
   flex-shrink: 0;
 }
 
@@ -523,8 +526,9 @@ button:focus:not(:focus-visible) {
   align-items: center;
   justify-content: center;
   gap: 5px;
-  padding: 8px;
-  font-size: 11px;
+  padding: 0 8px;
+  height: 100%;
+  font-size: var(--text-label);
   font-weight: 600;
   color: var(--color-text-muted);
   background: none;
@@ -580,7 +584,7 @@ button:focus:not(:focus-visible) {
 }
 
 .stat-number {
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--color-text-primary);
   font-family: var(--font-mono);
@@ -595,7 +599,7 @@ button:focus:not(:focus-visible) {
 }
 
 .stat-label {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--color-text-muted);
   margin-top: 2px;
@@ -618,7 +622,7 @@ button:focus:not(:focus-visible) {
 }
 
 .health-ok p {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--color-success);
 }
 
@@ -674,7 +678,7 @@ button:focus:not(:focus-visible) {
 }
 
 .issue-message {
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.6;
   color: var(--color-text-secondary);
   font-family: var(--font-mono);
@@ -703,7 +707,7 @@ button:focus:not(:focus-visible) {
 }
 
 .suggestion-reason {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--color-text-secondary);
   margin-bottom: 6px;
   line-height: 1.5;
@@ -715,7 +719,7 @@ button:focus:not(:focus-visible) {
   background: var(--color-surface);
   border-radius: var(--radius-sm);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 13px;
   color: var(--color-success);
   word-break: break-all;
 }
@@ -738,14 +742,14 @@ button:focus:not(:focus-visible) {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
 }
 
 .rel-table {
   color: var(--color-accent);
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .rel-arrow {
@@ -754,7 +758,7 @@ button:focus:not(:focus-visible) {
 }
 
 .cardinality-badge {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   padding: 2px 8px;
   border-radius: 10px;
@@ -777,7 +781,7 @@ button:focus:not(:focus-visible) {
 }
 
 .query-explanation {
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.6;
   color: var(--color-text-secondary);
   padding: 10px 12px;
