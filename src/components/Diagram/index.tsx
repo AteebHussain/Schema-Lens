@@ -22,6 +22,7 @@ export default function Diagram() {
   const relationships = useSchemaStore((s) => s.relationships);
   const activeRelationshipId = useSchemaStore((s) => s.activeRelationshipId);
   const setActiveRelationship = useSchemaStore((s) => s.setActiveRelationship);
+  const [isResetting, setIsResetting] = useState(false);
 
   // Track dimensions
   useEffect(() => {
@@ -169,6 +170,16 @@ export default function Diagram() {
       .attr("text-anchor", "middle")
       .text((d: GraphLink) => getCardinalityLabel(d.relationship.cardinality).target);
 
+    // Mid-line label (New)
+    cardLabels
+      .append("text")
+      .attr("class", "cardinality-text mid-label")
+      .attr("fill", "#555")
+      .attr("font-size", "10px")
+      .attr("font-weight", "500")
+      .attr("text-anchor", "middle")
+      .text((d: GraphLink) => d.relationship.cardinality);
+
     // Nodes
     const nodeGroup = g.append("g").attr("class", "nodes");
     const nodeGs = nodeGroup
@@ -192,8 +203,9 @@ export default function Diagram() {
           })
           .on("end", (event, d) => {
             if (!event.active) simulationRef.current?.alphaTarget(0);
-            d.fx = null;
-            d.fy = null;
+            // Lock position after drag
+            d.fx = event.x;
+            d.fy = event.y;
           })
       );
 
@@ -342,6 +354,7 @@ export default function Diagram() {
         const group = d3.select(this);
         group.select(".source-card").attr("x", sx + (tx - sx) * 0.2).attr("y", sy + (ty - sy) * 0.2 - 8);
         group.select(".target-card").attr("x", sx + (tx - sx) * 0.8).attr("y", sy + (ty - sy) * 0.8 - 8);
+        group.select(".mid-label").attr("x", sx + (tx - sx) * 0.5).attr("y", sy + (ty - sy) * 0.5 - 8);
       });
     });
 
@@ -351,8 +364,21 @@ export default function Diagram() {
   }, [tables, relationships, activeRelationshipId, setActiveRelationship, dimensions]);
 
   const handleResetLayout = useCallback(() => {
+    setIsResetting(true);
+    // Unfix all nodes for reset
+    tables.forEach((t) => {
+      const node = simulationRef.current?.nodes().find((n) => n.id === t.name);
+      if (node) {
+        node.fx = null;
+        node.fy = null;
+      }
+    });
+
     simulationRef.current?.alpha(1).restart();
-  }, []);
+    setTimeout(() => {
+      setIsResetting(false);
+    }, 800);
+  }, [tables]);
 
   // Keyboard: Escape to deselect
   useEffect(() => {
@@ -391,17 +417,20 @@ export default function Diagram() {
   return (
     <div className="diagram-container" ref={containerRef}>
       <div className="diagram-toolbar">
-        <button onClick={handleResetLayout} className="toolbar-btn" title="Reset Layout">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-            <path d="M2 8a6 6 0 0111.46-2.46" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            <path d="M14 8a6 6 0 01-11.46 2.46" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            <path d="M14 2v4h-4M2 14v-4h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          Reset
-        </button>
-        <span className="toolbar-info">
-          {tables.length} table{tables.length !== 1 ? "s" : ""} · {relationships.length} relationship{relationships.length !== 1 ? "s" : ""}
-        </span>
+        <div className="toolbar-left">
+          <button onClick={handleResetLayout} className="toolbar-btn" title="Reset Layout" disabled={isResetting}>
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+              <path d="M2 8a6 6 0 0111.46-2.46" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              <path d="M14 8a6 6 0 01-11.46 2.46" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              <path d="M14 2v4h-4M2 14v-4h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            {isResetting ? "Resetting..." : "Reset"}
+          </button>
+          <div className="toolbar-divider">|</div>
+          <span className="toolbar-info">
+            {tables.length} table{tables.length !== 1 ? "s" : ""} · {relationships.length} relationship{relationships.length !== 1 ? "s" : ""}
+          </span>
+        </div>
       </div>
       <svg ref={svgRef} className="diagram-svg" />
     </div>

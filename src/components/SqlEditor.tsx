@@ -12,7 +12,7 @@ import { useSchemaStore } from "@/src/store/schemaStore";
 const schemaLensEditorTheme = EditorView.theme(
   {
     "&": {
-      color: "#F5EDED",
+      color: "#888",
       backgroundColor: "#0d0b0b",
       fontSize: "13px",
     },
@@ -36,7 +36,7 @@ const schemaLensEditorTheme = EditorView.theme(
     },
     ".cm-gutters": {
       backgroundColor: "#0d0b0b",
-      color: "#6e5c5c",
+      color: "#444",
       border: "none",
       borderRight: "1px solid rgba(62, 54, 54, 0.3)",
     },
@@ -64,16 +64,16 @@ const schemaLensEditorTheme = EditorView.theme(
 
 const schemaLensHighlightStyle = HighlightStyle.define([
   { tag: tags.keyword, color: "#D72323", fontWeight: "600" },
-  { tag: tags.typeName, color: "#F5EDED" },
-  { tag: tags.string, color: "#4ade80" },
-  { tag: tags.number, color: "#fbbf24" },
-  { tag: tags.comment, color: "#6e5c5c", fontStyle: "italic" },
-  { tag: tags.punctuation, color: "#6e5c5c" },
-  { tag: tags.operator, color: "#b8a9a9" },
-  { tag: tags.variableName, color: "#F5EDED" },
-  { tag: tags.propertyName, color: "#b8a9a9" },
-  { tag: tags.bracket, color: "#564b4b" },
-  { tag: tags.definition(tags.variableName), color: "#F5EDED" },
+  { tag: tags.typeName, color: "#888" },
+  { tag: tags.string, color: "#888" },
+  { tag: tags.number, color: "#888" },
+  { tag: tags.comment, color: "#444", fontStyle: "italic" },
+  { tag: tags.punctuation, color: "#444" },
+  { tag: tags.operator, color: "#888" },
+  { tag: tags.variableName, color: "#888" },
+  { tag: tags.propertyName, color: "#888" },
+  { tag: tags.bracket, color: "#444" },
+  { tag: tags.definition(tags.variableName), color: "#888" },
 ]);
 
 export default function SqlEditor() {
