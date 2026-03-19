@@ -1,6 +1,5 @@
 "use client";
-
-import { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useSchemaStore } from "@/src/store/schemaStore";
 
 export default function Sidebar() {
@@ -17,6 +16,8 @@ export default function Sidebar() {
   const setAiExplanation = useSchemaStore((s) => s.setAiExplanation);
   const setAiLoading = useSchemaStore((s) => s.setAiLoading);
   const setActiveRelationship = useSchemaStore((s) => s.setActiveRelationship);
+  
+  const [aiDetailsVisible, setAiDetailsVisible] = useState(false);
 
   const activeRel = relationships.find((r) => r.id === activeRelationshipId);
   const activeQuery = joinQueries.find((q) => q.relationshipId === activeRelationshipId);
@@ -25,6 +26,7 @@ export default function Sidebar() {
     if (!activeRel || !activeQuery) return;
     setAiLoading(true);
     setAiExplanation(null);
+    setAiDetailsVisible(false);
 
     try {
       const sourceTable = tables.find((t) => t.name === activeRel.sourceTable);
@@ -70,9 +72,10 @@ export default function Sidebar() {
         <button
           className={`sidebar-tab ${activeTab === "health" ? "active" : ""}`}
           onClick={() => setActiveTab("health")}
+          title="Schema issues & warnings"
         >
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-            <path d="M8 1v14M1 8h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>
           </svg>
           Health
           {healthIssues.length > 0 && (
@@ -82,185 +85,200 @@ export default function Sidebar() {
         <button
           className={`sidebar-tab ${activeTab === "query" ? "active" : ""}`}
           onClick={() => setActiveTab("query")}
+          title="Generate & optimize SQL"
         >
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-            <path d="M2 3h12M2 7h8M2 11h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
           </svg>
           Query
         </button>
         <button
           className={`sidebar-tab ${activeTab === "ai" ? "active" : ""}`}
           onClick={() => setActiveTab("ai")}
+          title="Natural language schema explanation"
         >
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-            <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-            <path d="M8 5v3l2 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+            <path d="M5 3v4"/><path d="M3 5h4"/><path d="M21 17v4"/><path d="M19 19h4"/>
           </svg>
           AI
         </button>
       </div>
 
-      {/* Health Tab */}
-      {activeTab === "health" && (
-        <div className="sidebar-content">
-          <div className="health-summary">
-            <div className="summary-stat">
-              <span className="stat-number">{tables.length}</span>
-              <span className="stat-label">Tables</span>
+      <div className="sidebar-scroll-container">
+        {/* Health Tab */}
+        {activeTab === "health" && (
+          <div className="sidebar-content">
+            <div className="health-summary">
+              <div className="summary-stat">
+                <span className="stat-number">{tables.length}</span>
+                <span className="stat-label">Tables</span>
+              </div>
+              <div className="summary-stat">
+                <span className="stat-number">{relationships.length}</span>
+                <span className="stat-label">Relations</span>
+              </div>
+              <div className="summary-stat">
+                <span className={`stat-number-large ${healthIssues.length > 0 ? "has-issues" : "no-issues"}`}>
+                  {healthIssues.length}
+                </span>
+                <span className="stat-label">Issues</span>
+              </div>
             </div>
-            <div className="summary-stat">
-              <span className="stat-number">{relationships.length}</span>
-              <span className="stat-label">Relations</span>
-            </div>
-            <div className="summary-stat">
-              <span className={`stat-number ${healthIssues.length > 0 ? "has-issues" : "no-issues"}`}>
-                {healthIssues.length}
-              </span>
-              <span className="stat-label">Issues</span>
+
+            {healthIssues.length === 0 ? (
+              <div className="health-ok">
+                <span className="health-ok-icon">✓</span>
+                <p>Schema looks healthy! No issues detected.</p>
+              </div>
+            ) : (
+              <div className="health-list">
+                {healthIssues.map((issue, i) => (
+                  <div key={i} className={`health-issue-card severity-${issue.severity}`}>
+                    <p className="issue-message">{issue.message}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {indexSuggestions.length > 0 && (
+              <div className="index-suggestions">
+                <h3 className="section-title">Index Suggestions</h3>
+                {indexSuggestions.map((suggestion, i) => (
+                  <div key={i} className="suggestion-item">
+                    <p className="suggestion-reason">{suggestion.reason}</p>
+                    <code className="suggestion-sql">{suggestion.createStatement}</code>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Query Tab */}
+        {activeTab === "query" && (
+          <div className="sidebar-content p-0">
+            <div className="query-accordion">
+              {relationships.length > 0 ? (
+                relationships.map((rel) => {
+                  const isActive = rel.id === activeRelationshipId;
+                  const query = joinQueries.find(q => q.relationshipId === rel.id);
+                  
+                  return (
+                    <div key={rel.id} className={`accordion-item ${isActive ? 'active' : ''}`}>
+                      <button 
+                        className="accordion-header"
+                        onClick={() => setActiveRelationship(isActive ? null : rel.id)}
+                      >
+                        <div className="rel-info">
+                          <span className="rel-table">{rel.sourceTable}</span>
+                          <span className="rel-arrow">→</span>
+                          <span className="rel-table">{rel.targetTable}</span>
+                        </div>
+                        <span className={`cardinality-badge card-${rel.cardinality.replace(":", "")}`}>
+                          {rel.cardinality}
+                        </span>
+                      </button>
+                      
+                      {isActive && query && (
+                        <div className="accordion-body">
+                          <p className="query-explanation">{query.explanation}</p>
+                          
+                          <div className="code-block-container">
+                            <div className="code-block-label">OPTIMIZED JOIN</div>
+                            <button
+                              className="copy-btn-overlay"
+                              onClick={() => navigator.clipboard.writeText(query.sql)}
+                            >
+                              Copy
+                            </button>
+                            <pre className="query-sql"><code>{query.sql}</code></pre>
+                          </div>
+                          
+                          {query.indexWarning && (
+                            <div className="query-warning">
+                              <span>{query.indexWarning}</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="query-empty-state">
+                  <p>No relationships detected in the schema.</p>
+                </div>
+              )}
             </div>
           </div>
+        )}
 
-          {healthIssues.length === 0 ? (
-            <div className="health-ok">
-              <span className="health-ok-icon">✓</span>
-              <p>Schema looks healthy! No issues detected.</p>
-            </div>
-          ) : (
-            <div className="health-issues">
-              {healthIssues.map((issue, i) => (
-                <div key={i} className={`health-issue severity-${issue.severity}`}>
-                  <div className="issue-badge">
-                    {issue.severity === "error" ? "ERROR" : issue.severity === "warning" ? "WARN" : "INFO"}
-                  </div>
-                  <p className="issue-message">{issue.message}</p>
+        {/* AI Tab */}
+        {activeTab === "ai" && (
+          <div className="sidebar-content">
+            {activeRel ? (
+              <div className="ai-panel">
+                <div className="ai-header">
+                  <span className={`cardinality-badge card-${activeRel.cardinality.replace(":", "")}`}>
+                    {activeRel.cardinality}
+                  </span>
+                  <h3 className="rel-title">
+                    <span className="rel-table">{activeRel.sourceTable}</span>
+                    <span className="rel-arrow">→</span>
+                    <span className="rel-table">{activeRel.targetTable}</span>
+                  </h3>
                 </div>
-              ))}
-            </div>
-          )}
 
-          {indexSuggestions.length > 0 && (
-            <div className="index-suggestions">
-              <h3 className="section-title">Index Suggestions</h3>
-              {indexSuggestions.map((suggestion, i) => (
-                <div key={i} className="suggestion-item">
-                  <p className="suggestion-reason">{suggestion.reason}</p>
-                  <code className="suggestion-sql">{suggestion.createStatement}</code>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Query Tab */}
-      {activeTab === "query" && (
-        <div className="sidebar-content">
-          {activeRel && activeQuery ? (
-            <div className="query-detail">
-              <div className="query-header">
-                <h3 className="rel-title">
-                  <span className="rel-table">{activeRel.sourceTable}</span>
-                  <span className="rel-arrow">→</span>
-                  <span className="rel-table">{activeRel.targetTable}</span>
-                </h3>
-                <span className={`cardinality-badge card-${activeRel.cardinality.replace(":", "")}`}>
-                  {activeRel.cardinality}
-                </span>
-              </div>
-
-              <p className="query-explanation">{activeQuery.explanation}</p>
-
-              <div className="query-block">
-                <div className="query-block-header">
-                  <span>Optimized JOIN</span>
-                  <button
-                    className="copy-btn"
-                    onClick={() => navigator.clipboard.writeText(activeQuery.sql)}
-                  >
-                    Copy
+                {!aiExplanation && !aiLoading && (
+                  <button className="ai-btn" onClick={fetchAiExplanation}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+                    </svg>
+                    Analyze with AI
                   </button>
-                </div>
-                <pre className="query-sql"><code>{activeQuery.sql}</code></pre>
-              </div>
+                )}
 
-              {activeQuery.indexWarning && (
-                <div className="query-warning">
-                  <span>{activeQuery.indexWarning}</span>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="query-empty">
-              <p>Click a relationship line in the diagram to see the JOIN query</p>
-              {relationships.length > 0 && (
-                <div className="rel-list">
-                  <h4>Available Relationships</h4>
-                  {relationships.map((rel) => (
-                    <button
-                      key={rel.id}
-                      className="rel-list-item"
-                      onClick={() => setActiveRelationship(rel.id)}
+                {aiLoading && (
+                  <div className="ai-skeleton">
+                    <div className="skeleton" style={{ height: 16, width: '80%' }} />
+                    <div className="skeleton" style={{ height: 16, width: '100%' }} />
+                    <div className="skeleton" style={{ height: 16, width: '60%' }} />
+                  </div>
+                )}
+
+                {aiExplanation && (
+                  <div className="ai-result">
+                    <div className="ai-summary">
+                      {aiExplanation.split('.')[0]}.
+                    </div>
+                    
+                    <button 
+                      className="ai-details-toggle"
+                      onClick={() => setAiDetailsVisible(!aiDetailsVisible)}
                     >
-                      <span className="rel-table">{rel.sourceTable}</span>
-                      <span className="rel-arrow">→</span>
-                      <span className="rel-table">{rel.targetTable}</span>
-                      <span className={`cardinality-badge card-${rel.cardinality.replace(":", "")}`}>
-                        {rel.cardinality}
-                      </span>
+                      {aiDetailsVisible ? "Hide Details" : "Show Details"}
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: aiDetailsVisible ? 'rotate(180deg)' : '' }}>
+                        <path d="m6 9 6 6 6-6"/>
+                      </svg>
                     </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* AI Tab */}
-      {activeTab === "ai" && (
-        <div className="sidebar-content">
-          {activeRel ? (
-            <div className="ai-panel">
-              <div className="query-header">
-                <h3 className="rel-title">
-                  <span className="rel-table">{activeRel.sourceTable}</span>
-                  <span className="rel-arrow">→</span>
-                  <span className="rel-table">{activeRel.targetTable}</span>
-                </h3>
+                    
+                    {aiDetailsVisible && (
+                      <div className="ai-details">
+                        <p>{aiExplanation.substring(aiExplanation.indexOf('.') + 1).trim()}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-
-              {!aiExplanation && !aiLoading && (
-                <button className="ai-btn" onClick={fetchAiExplanation}>
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-                    <path d="M6 8l1.5 1.5L10 6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  Analyze with AI
-                </button>
-              )}
-
-              {aiLoading && (
-                <div className="ai-skeleton">
-                  <div className="skeleton" style={{ height: 16, width: '80%' }} />
-                  <div className="skeleton" style={{ height: 16, width: '100%' }} />
-                  <div className="skeleton" style={{ height: 16, width: '60%' }} />
-                  <div className="skeleton" style={{ height: 16, width: '90%' }} />
-                </div>
-              )}
-
-              {aiExplanation && (
-                <div className="ai-result">
-                  <p>{aiExplanation}</p>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="query-empty">
-              <p>Select a relationship to analyze with AI</p>
-            </div>
-          )}
-        </div>
-      )}
+            ) : (
+              <div className="query-empty">
+                <p>Select a relationship line to analyze</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
