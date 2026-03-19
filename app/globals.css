@@ -295,6 +295,19 @@ button:focus:not(:focus-visible) {
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  position: relative;
+}
+
+.sql-editor::after {
+  content: "";
+  position: absolute;
+  top: 48px; /* Below header */
+  right: 0;
+  bottom: 0;
+  width: 32px;
+  background: linear-gradient(to right, transparent, #0D0D0D);
+  pointer-events: none;
+  z-index: 5;
 }
 
 .editor-header {
@@ -317,12 +330,13 @@ button:focus:not(:focus-visible) {
 }
 
 .editor-badge {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
-  padding: 2px 6px;
+  padding: 2px 8px;
   border-radius: var(--radius-sm);
-  background: var(--color-accent-muted);
-  color: var(--color-accent);
+  background: #1A1A1A;
+  border: 1px solid #E63946;
+  color: #E63946;
 }
 
 .cm-wrapper {
@@ -393,16 +407,27 @@ button:focus:not(:focus-visible) {
   height: 48px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 0 12px;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid #1F1F1F;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   z-index: 5;
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toolbar-divider {
+  color: #3E3636;
+  font-size: 14px;
+  user-select: none;
 }
 
 .toolbar-btn {
@@ -428,7 +453,9 @@ button:focus:not(:focus-visible) {
 
 .toolbar-info {
   font-size: 11px;
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  opacity: 0.8;
 }
 
 .diagram-svg {

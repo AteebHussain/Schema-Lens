@@ -77,7 +77,7 @@ export function createSimulation(
         .forceCollide<GraphNode>()
         .radius((d) => Math.max(d.width, d.height) / 2 + 30)
     )
-    .alphaDecay(0.02);
+    .alphaDecay(0.07);
 }
 
 // ── Edge path calculation ──────────────────────────────────────────────
