@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SchemaLens — Database Schema Visualizer & Query Optimizer",
+  title: "SchemaLens | Your Schema, Decoded",
   description:
     "Paste your SQL schema and instantly get an interactive ERD, optimized JOIN queries, index suggestions, and a schema health report. SchemaLens reads your database and tells you what's wrong with it.",
   keywords: [
