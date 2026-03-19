@@ -233,7 +233,7 @@ export default function Diagram() {
       .attr("x", 12)
       .attr("y", 23)
       .attr("fill", "#F5EDED")
-      .attr("font-size", "13px")
+      .attr("font-size", "15px")
       .attr("font-weight", "700")
       .attr("font-family", "var(--font-geist-mono), monospace")
       .text((d) => d.table.name);
@@ -253,9 +253,9 @@ export default function Diagram() {
           group
             .append("rect")
             .attr("x", 8)
-            .attr("y", y - 10)
-            .attr("width", 20)
-            .attr("height", 14)
+            .attr("y", y - 11)
+            .attr("width", 24)
+            .attr("height", 16)
             .attr("rx", 3)
             .attr("fill", "#F5EDED")
             .attr("fill-opacity", 0.1);
@@ -264,7 +264,7 @@ export default function Diagram() {
             .attr("x", 18)
             .attr("y", y + 1)
             .attr("fill", "#F5EDED")
-            .attr("font-size", "8px")
+            .attr("font-size", "11px")
             .attr("font-weight", "700")
             .attr("text-anchor", "middle")
             .text("PK");
@@ -273,10 +273,10 @@ export default function Diagram() {
         if (isFK) {
           group
             .append("rect")
-            .attr("x", isPK ? 32 : 8)
-            .attr("y", y - 10)
-            .attr("width", 20)
-            .attr("height", 14)
+            .attr("x", isPK ? 36 : 8)
+            .attr("y", y - 11)
+            .attr("width", 24)
+            .attr("height", 16)
             .attr("rx", 3)
             .attr("fill", "#D72323")
             .attr("fill-opacity", 0.2);
@@ -285,14 +285,14 @@ export default function Diagram() {
             .attr("x", (isPK ? 32 : 8) + 10)
             .attr("y", y + 1)
             .attr("fill", "#D72323")
-            .attr("font-size", "8px")
+            .attr("font-size", "11px")
             .attr("font-weight", "700")
             .attr("text-anchor", "middle")
             .text("FK");
         }
 
         // Column name
-        const nameX = isPK && isFK ? 58 : isPK || isFK ? 34 : 12;
+        const nameX = isPK && isFK ? 66 : isPK || isFK ? 38 : 12;
         group
           .append("text")
           .attr("x", nameX)
@@ -308,7 +308,7 @@ export default function Diagram() {
           .attr("x", d.width - 8)
           .attr("y", y)
           .attr("fill", "#6e5c5c")
-          .attr("font-size", "10px")
+          .attr("font-size", "11px")
           .attr("font-family", "var(--font-geist-mono), monospace")
           .attr("text-anchor", "end")
           .text(col.dataType);

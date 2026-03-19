@@ -14,7 +14,7 @@ const schemaLensEditorTheme = EditorView.theme(
     "&": {
       color: "#F5EDED",
       backgroundColor: "#0d0b0b",
-      fontSize: "12px",
+      fontSize: "13px",
     },
     ".cm-content": {
       caretColor: "#D72323",
