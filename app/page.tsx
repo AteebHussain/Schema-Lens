@@ -61,13 +61,58 @@ export default function Home() {
   );
 
   const handleShare = useCallback(() => {
-    if (!rawSQL) return;
-    const encoded = compressToURL(rawSQL);
-    const url = `${window.location.origin}?s=${encoded}`;
-    navigator.clipboard.writeText(url);
+    const svgElement = document.querySelector(".diagram-svg") as SVGSVGElement | null;
+    if (!svgElement) return;
+
+    const clonedSvg = svgElement.cloneNode(true) as SVGSVGElement;
+    
+    // Remove transform from the main <g> to reset zoom/pan
+    const mainG = clonedSvg.querySelector("g");
+    if (mainG) {
+      mainG.removeAttribute("transform");
+    }
+
+    // Append temporarily to calculate accurate bounding box
+    clonedSvg.style.visibility = "hidden";
+    document.body.appendChild(clonedSvg);
+    const bbox = (mainG || clonedSvg).getBBox();
+    document.body.removeChild(clonedSvg);
+
+    const padding = 50;
+    clonedSvg.setAttribute("viewBox", `${bbox.x - padding} ${bbox.y - padding} ${bbox.width + padding*2} ${bbox.height + padding*2}`);
+    clonedSvg.setAttribute("width", `${bbox.width + padding*2}`);
+    clonedSvg.setAttribute("height", `${bbox.height + padding*2}`);
+
+    let svgData = new XMLSerializer().serializeToString(clonedSvg);
+    svgData = svgData.replace(/var\(--font-geist-mono\)/g, "monospace");
+
+    const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(svgBlob);
+    
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = bbox.width + padding*2;
+      canvas.height = bbox.height + padding*2;
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.fillStyle = "#000000"; // app background color
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+        
+        const pngUrl = canvas.toDataURL("image/png");
+        const a = document.createElement("a");
+        a.href = pngUrl;
+        a.download = "schema-lens-diagram.png";
+        a.click();
+      }
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
+
     setShareTooltip(true);
     setTimeout(() => setShareTooltip(false), 2000);
-  }, [rawSQL]);
+  }, []);
 
   return (
     <div className="app-shell">
@@ -150,7 +195,7 @@ export default function Home() {
               <line x1="6" y1="7" x2="10" y2="4" stroke="currentColor" strokeWidth="1.5" />
               <line x1="6" y1="9" x2="10" y2="12" stroke="currentColor" strokeWidth="1.5" />
             </svg>
-            {shareTooltip ? "Copied!" : "Share"}
+            {shareTooltip ? "Downloaded!" : "Share"}
           </button>
         </div>
       </header>

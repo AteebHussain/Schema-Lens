@@ -47,7 +47,7 @@ export const useSchemaStore = create<SchemaState>((set) => ({
   indexSuggestions: [],
   joinQueries: [],
   activeRelationshipId: null,
-  activeTab: "health",
+  activeTab: "query",
   aiExplanation: null,
   aiLoading: false,
 

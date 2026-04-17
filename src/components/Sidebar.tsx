@@ -2,6 +2,23 @@
 import React, { useCallback, useState } from "react";
 import { useSchemaStore } from "@/src/store/schemaStore";
 
+function HealthIssueCard({ issue }: { issue: any }) {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <div className={`health-issue-card severity-${issue.severity}`}>
+      <p className="issue-message">{issue.message}</p>
+      {issue.hint && (
+        <div className="issue-hint-container">
+          <button className="issue-hint-toggle" onClick={() => setExpanded(!expanded)}>
+            {expanded ? "Hide Hint" : "Show Hint"}
+          </button>
+          {expanded && <div className="issue-hint-content">{issue.hint}</div>}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Sidebar() {
   const activeRelationshipId = useSchemaStore((s) => s.activeRelationshipId);
   const relationships = useSchemaStore((s) => s.relationships);
@@ -70,6 +87,16 @@ export default function Sidebar() {
       {/* Tab bar */}
       <div className="sidebar-tabs">
         <button
+          className={`sidebar-tab ${activeTab === "query" ? "active" : ""}`}
+          onClick={() => setActiveTab("query")}
+          title="Generate & optimize SQL"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
+          </svg>
+          Query
+        </button>
+        <button
           className={`sidebar-tab ${activeTab === "health" ? "active" : ""}`}
           onClick={() => setActiveTab("health")}
           title="Schema issues & warnings"
@@ -81,16 +108,6 @@ export default function Sidebar() {
           {healthIssues.length > 0 && (
             <span className="tab-badge">{healthIssues.length}</span>
           )}
-        </button>
-        <button
-          className={`sidebar-tab ${activeTab === "query" ? "active" : ""}`}
-          onClick={() => setActiveTab("query")}
-          title="Generate & optimize SQL"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
-          </svg>
-          Query
         </button>
         <button
           className={`sidebar-tab ${activeTab === "ai" ? "active" : ""}`}
@@ -134,9 +151,7 @@ export default function Sidebar() {
             ) : (
               <div className="health-list">
                 {healthIssues.map((issue, i) => (
-                  <div key={i} className={`health-issue-card severity-${issue.severity}`}>
-                    <p className="issue-message">{issue.message}</p>
-                  </div>
+                  <HealthIssueCard key={i} issue={issue} />
                 ))}
               </div>
             )}

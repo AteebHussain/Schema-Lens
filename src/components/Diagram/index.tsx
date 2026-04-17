@@ -23,6 +23,7 @@ export default function Diagram() {
   const activeRelationshipId = useSchemaStore((s) => s.activeRelationshipId);
   const setActiveRelationship = useSchemaStore((s) => s.setActiveRelationship);
   const [isResetting, setIsResetting] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
 
   // Track dimensions
   useEffect(() => {
@@ -115,26 +116,19 @@ export default function Diagram() {
       .append("path")
       .attr("class", "link-path")
       .attr("fill", "none")
-      .attr("stroke", (d: GraphLink) =>
-        d.relationship.id === activeRelationshipId ? "#D72323" : "#3E3636"
-      )
-      .attr("stroke-width", (d: GraphLink) =>
-        d.relationship.id === activeRelationshipId ? 3 : 1.5
-      )
+      .attr("stroke", "#3E3636")
+      .attr("stroke-width", 1.5)
       .attr("stroke-opacity", 0.7)
-      .attr("marker-end", (d: GraphLink) =>
-        d.relationship.id === activeRelationshipId
-          ? "url(#arrowhead-active)"
-          : "url(#arrowhead)"
-      )
+      .attr("marker-end", "url(#arrowhead)")
+      .attr("data-active", "false")
       .attr("cursor", "pointer")
-      .on("mouseover", function (this: SVGPathElement, _event: MouseEvent, d: GraphLink) {
-        if (d.relationship.id !== activeRelationshipId) {
+      .on("mouseover", function (this: SVGPathElement) {
+        if (d3.select(this).attr("data-active") !== "true") {
           d3.select(this).attr("stroke", "#D72323").attr("stroke-width", 2.5).attr("stroke-opacity", 1);
         }
       })
-      .on("mouseout", function (this: SVGPathElement, _event: MouseEvent, d: GraphLink) {
-        if (d.relationship.id !== activeRelationshipId) {
+      .on("mouseout", function (this: SVGPathElement) {
+        if (d3.select(this).attr("data-active") !== "true") {
           d3.select(this).attr("stroke", "#3E3636").attr("stroke-width", 1.5).attr("stroke-opacity", 0.7);
         }
       })
@@ -193,17 +187,19 @@ export default function Diagram() {
         d3
           .drag<SVGGElement, GraphNode>()
           .on("start", (event, d) => {
-            if (!event.active) simulationRef.current?.alphaTarget(0.3).restart();
             d.fx = d.x;
             d.fy = d.y;
           })
           .on("drag", (event, d) => {
             d.fx = event.x;
             d.fy = event.y;
+            d.x = event.x;
+            d.y = event.y;
+            if ((svgRef.current as any).__updatePositions) {
+              (svgRef.current as any).__updatePositions();
+            }
           })
           .on("end", (event, d) => {
-            if (!event.active) simulationRef.current?.alphaTarget(0);
-            // Lock position after drag
             d.fx = event.x;
             d.fy = event.y;
           })
@@ -327,11 +323,7 @@ export default function Diagram() {
       });
     });
 
-    // Create simulation
-    const simulation = createSimulation(nodes, links, width, height);
-    simulationRef.current = simulation;
-
-    simulation.on("tick", () => {
+    function updatePositions() {
       // Update node positions
       nodeGs.attr("transform", (d) => `translate(${(d.x ?? 0) - d.width / 2},${(d.y ?? 0) - d.height / 2})`);
 
@@ -356,29 +348,44 @@ export default function Diagram() {
         group.select(".target-card").attr("x", sx + (tx - sx) * 0.8).attr("y", sy + (ty - sy) * 0.8 - 8);
         group.select(".mid-label").attr("x", sx + (tx - sx) * 0.5).attr("y", sy + (ty - sy) * 0.5 - 8);
       });
-    });
+    }
+
+    // Assign to a variable so drag can access it
+    (svg as any).__updatePositions = updatePositions;
+
+    // Create simulation
+    const simulation = createSimulation(nodes, links, width, height);
+    simulationRef.current = simulation;
+    
+    // Stop the simulation and run synchronously
+    simulation.stop();
+    for (let i = 0; i < 300; ++i) {
+      simulation.tick();
+    }
+    updatePositions();
 
     return () => {
       simulation.stop();
     };
-  }, [tables, relationships, activeRelationshipId, setActiveRelationship, dimensions]);
+  }, [tables, relationships, setActiveRelationship, dimensions, resetKey]);
+
+  // Handle active relationship styling independently
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    d3.select(svg).selectAll<SVGPathElement, GraphLink>(".link-path")
+      .attr("data-active", (d) => d.relationship.id === activeRelationshipId ? "true" : "false")
+      .attr("stroke", (d) => d.relationship.id === activeRelationshipId ? "#D72323" : "#3E3636")
+      .attr("stroke-width", (d) => d.relationship.id === activeRelationshipId ? 3 : 1.5)
+      .attr("stroke-opacity", (d) => d.relationship.id === activeRelationshipId ? 1 : 0.7)
+      .attr("marker-end", (d) => d.relationship.id === activeRelationshipId ? "url(#arrowhead-active)" : "url(#arrowhead)");
+  }, [activeRelationshipId]);
 
   const handleResetLayout = useCallback(() => {
     setIsResetting(true);
-    // Unfix all nodes for reset
-    tables.forEach((t) => {
-      const node = simulationRef.current?.nodes().find((n) => n.id === t.name);
-      if (node) {
-        node.fx = null;
-        node.fy = null;
-      }
-    });
-
-    simulationRef.current?.alpha(1).restart();
-    setTimeout(() => {
-      setIsResetting(false);
-    }, 800);
-  }, [tables]);
+    setResetKey(prev => prev + 1);
+    setTimeout(() => setIsResetting(false), 500);
+  }, []);
 
   // Keyboard: Escape to deselect
   useEffect(() => {

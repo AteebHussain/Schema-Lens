@@ -9,6 +9,7 @@ export interface HealthIssue {
   column?: string;
   code: string;
   message: string;
+  hint?: string;
 }
 
 // ── Validator ─────────────────────────────────────────────────────────────
@@ -37,6 +38,7 @@ function checkMissingPrimaryKeys(tables: Table[], issues: HealthIssue[]) {
         table: table.name,
         code: "MISSING_PK",
         message: `Table \`${table.name}\` has no primary key. Every table should have an explicit PK for reliable JOINs and indexing.`,
+        hint: `Add a PRIMARY KEY constraint to your table definition, e.g., "id INT PRIMARY KEY" or "PRIMARY KEY (id)".`,
       });
     }
   }
@@ -63,6 +65,7 @@ function checkOrphanedTables(
         table: table.name,
         code: "ORPHANED_TABLE",
         message: `Table \`${table.name}\` has no foreign key relationships. It may be orphaned or missing a FK constraint.`,
+        hint: `If this table is meant to relate to others, add a FOREIGN KEY constraint. Otherwise, you can safely ignore this warning.`,
       });
     }
   }
@@ -113,6 +116,7 @@ function checkCircularDependencies(tables: Table[], issues: HealthIssue[]) {
       table: cycle[0],
       code: "CIRCULAR_FK",
       message: `Circular FK dependency detected: ${cycle.join(" → ")} → ${cycle[0]}. This can cause insertion order issues and makes cascading deletes dangerous.`,
+      hint: `Consider breaking the cycle by removing one of the foreign keys or introducing a junction table. Cycles complicate inserts and deletes.`,
     });
   }
 }
@@ -130,6 +134,7 @@ function checkNamingInconsistencies(tables: Table[], issues: HealthIssue[]) {
       table: "*",
       code: "NAMING_MIX",
       message: `Mixed naming conventions detected: some tables use snake_case while others use camelCase. Consider standardizing.`,
+      hint: `Choose either snake_case (e.g. user_profiles) or camelCase (e.g. userProfiles) for all table and column names to maintain consistency across your schema.`,
     });
   }
 }
@@ -150,6 +155,7 @@ function checkMissingFKIndexes(tables: Table[], issues: HealthIssue[]) {
           column: fkCol,
           code: "MISSING_FK_INDEX",
           message: `FK column \`${table.name}.${fkCol}\` has no index. JOINs to \`${fk.refTable}\` will scan the full \`${table.name}\` table.`,
+          hint: `Create an index on the foreign key column to speed up JOIN operations. For example: "CREATE INDEX idx_${table.name}_${fkCol} ON ${table.name}(${fkCol});"`,
         });
       }
     }

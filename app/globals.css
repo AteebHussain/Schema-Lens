@@ -692,6 +692,35 @@ button:focus:not(:focus-visible) {
   font-family: var(--font-mono);
 }
 
+.issue-hint-container {
+  margin-top: 8px;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 8px;
+}
+
+.issue-hint-toggle {
+  background: none;
+  border: none;
+  color: var(--color-accent);
+  font-size: 11px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  padding: 0;
+}
+
+.issue-hint-toggle:hover {
+  text-decoration: underline;
+}
+
+.issue-hint-content {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  font-family: var(--font-sans);
+}
+
 /* Index Suggestions */
 .index-suggestions {
   margin-top: 16px;
